@@ -54,3 +54,11 @@
   });
 
 })(jQuery); // End of use strict
+
+var url = window.location;
+var element = $('li.nav-item a').filter(function() {
+        return this.href == url || url.href.indexOf(this.href) == 0;
+    }).addClass('active').parent().addClass('active').parent().addClass('show').parent();
+if (element.is('li')) {
+    element.addClass('active');
+}
