@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% block title %}Button{% endblock %} 
+{% block content %}
+
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  {% endfor %}
+              {% endif %}
+          {% endwith %}
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-4 text-gray-800">Hasil Labeling Berita</h1>
+          <form method="POST" action="" enctype="multipart/form-data">
+            <div class="col-sm-5">            
+              <input type="submit" value="Text Processing" name="textProcessing" class="btn btn-primary btn-sm d-inline">
+              <!-- <input type="submit" value="Proses Klasifikasi" name="klasifikasi" class="btn btn-primary btn-sm d-inline"> -->
+              <!-- <span class="spinner-border text-primary spinner-border-sm ml-2" role="status" aria-hidden="true" id="loading"></span> -->
+            </div>
+          </submit>
+          </form>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4 mt-2">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead class="text-dark">
+                    <tr class="table-primary"">
+                      <th>No</th>
+                      <th>Title</th>
+                      <th>Sumber</th>
+                      <th>Label</th>
+                        <!-- Option</th></th> -->
+                    </tr>
+                  </thead>
+                  <tbody class="text-dark">
+                    {% for item in data %}
+                    <tr>
+                      <td></td>
+                      <td>{{item.Title}}</td>
+                      <td>{{item.Sumber}}</td>
+                      <td>{{item.Label}}</td>
+                        <!-- <input type="button" class="btn btn-danger btn-sm" value="Edit" data-toggle="modal" data-target="#exampleModal" data-whatever1="{{item.Title}}" data-whatever2="{{item.Sumber}}" data-whatever3="{{item.Label}}"></td></td> -->
+                    </tr>
+                    {% endfor %}
+                 </tbody>
+                </table> 
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Title</label>
+                      <input type="text" class="form-control title" id="title" name="title">
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Sumber</label>
+                      <input type="text" class="form-control sumber" id="sumber" name="sumber">
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-labe">Label</label>
+                        <select class="custom-select" id="jeniskelamin" name="label" aria-label="Example select with button addon">
+                          <option selected>Pilih...</option>
+                          <option value="Positif">Positif</option>
+                          <option value="Negatif">Negatif</option>
+                          <option value="Netral">Netral</option>
+                        </select>
+                    </div>    
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <input type="submit" value="Edit" name="label" class="btn btn-primary">
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+         
+
+
+        </div>
+      <!-- End of Main Content -->
+
+  {% endblock %}
+
+
+
+  {% block js %}
+      {{ super() }}
+
+      <script>
+        $(document).ready(function() {
+           var t = $('#dataTable').DataTable( {
+               "columnDefs": [ {
+                   "searchable": false,
+                   "orderable": false,
+                   "targets": 0
+               } ],
+              
+           } );
+       
+           t.on( 'order.dt search.dt', function () {
+               t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                   cell.innerHTML = i+1;
+               } );
+           } ).draw();
+         } );
+
+
+         $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          
+          var title = button.data('whatever1')
+          var sumber = button.data('whatever2')
+          var sentimen = button.data('whatever3') // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('Edit Data')
+          modal.find('#title').val(title)
+          modal.find('#sumber').val(sumber)
+          modal.find('.modal-body select').val(sentimen)
+})
+       </script>
+       
+      <!-- Page level plugins -->
+      <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
+      <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+  
+      <!-- Page level custom scripts -->
+      <script src="{{ url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+
+     
+  {% endblock %}

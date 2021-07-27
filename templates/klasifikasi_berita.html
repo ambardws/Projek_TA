@@ -1,0 +1,147 @@
+{% extends "base.html" %} {% block title %}Button{% endblock %} 
+{% block content %}
+
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-4 text-gray-800">Hasil Klasifikasi Berita</h1>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  {% endfor %}
+              {% endif %}
+          {% endwith %}
+
+            <div class="col-sm-5">            
+              <input type="submit" value="Proses Klasifikasi" class="btn btn-primary btn-sm d-inline" data-toggle="modal" data-target="#exampleModal">
+              <!-- <input type="submit" value="Proses Klasifikasi" name="klasifikasi" class="btn btn-primary btn-sm d-inline"> -->
+              <!-- <span class="spinner-border text-primary spinner-border-sm ml-2" role="status" aria-hidden="true" id="loading"></span> -->
+            </div>
+
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4 mt-2">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead class="text-dark">
+                    <tr class="table-primary">
+                      <th>No</th>
+                      <th>Title Berita</th>
+                      <th>Klasifikasi Manual</th>
+                      <th>Klasifikasi Sistem</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-dark">
+                    {% for item in data %}
+                    <tr>
+                      <td></td>
+                      <td>{{item.Title}}</td>
+                      <td>{{item.Label}}</td>
+                      <td>{{item.Hasil_Prediksi}}</td>
+                    </tr>
+                    {% endfor %}
+                 </tbody>
+                </table> 
+              </div>
+            </div>
+          </div>
+         
+
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Jumlah Data Testing</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label for="customRange1" class="form-label" >Masukkan Jumlah</label>
+                      <input type="range" name="jumlah" class="form-range" min="100" max="{{total_pages|length}}" value="300" class="slider" step="100" id="myRange">
+                      <p>Testing: <span id="demo"></span></p>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-2">
+                          <label for="customRange3" class="form-label" >Nilai K :</label>
+                        </div>
+                        <div class="col-sm-2">
+                          <input class="form-control form-control-sm" type="number" placeholder="" name="k">
+                        </div> 
+                      </div>           
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <input type="submit" value="Proses Klasifikasi" name="label" class="btn btn-primary">
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      <!-- End of Main Content -->
+
+  {% endblock %}
+
+
+
+  {% block js %}
+      {{ super() }}
+
+      <script>
+        $(document).ready(function() {
+           var t = $('#dataTable').DataTable( {
+               "columnDefs": [ {
+                   "searchable": false,
+                   "orderable": false,
+                   "targets": 0
+               } ],
+              
+           } );
+       
+           t.on( 'order.dt search.dt', function () {
+               t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                   cell.innerHTML = i+1;
+               } );
+           } ).draw();
+         } );
+
+
+         $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+
+          var slider = document.getElementById("myRange");
+          var output = document.getElementById("demo");
+          output.innerHTML = slider.value;
+
+          slider.oninput = function() {
+            output.innerHTML = this.value;
+          }
+        })
+
+       </script>
+       
+      <!-- Page level plugins -->
+      <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
+      <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+  
+      <!-- Page level custom scripts -->
+      <script src="{{ url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+
+     
+  {% endblock %}

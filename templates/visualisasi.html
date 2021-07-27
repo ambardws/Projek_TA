@@ -1,0 +1,185 @@
+{% extends "base.html" %} {% block title %}Sample{% endblock %} 
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Hasil Visualisasi Model</h1>
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-xl-8 col-lg-7">
+
+              <!-- Area Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Visualisasi Perbandingan Tendesi Berita</h6>
+                </div>
+                <div class="card-body">
+                  {% for item in my_var %}
+                  <p>Jumlah Data Tes : {{item.data_tes}}</p>
+                  <p>Nilai K : {{item.nilai_k}}</p>
+                  <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <hr>
+                  <div class="row justify-content-center">
+
+                    <div class="col-sm-6 offset-sm-1">
+                      <p>Positif : {{positif}}</p>
+                      <p>Negatif : {{negatif}}</p>
+                      <p>Netral : {{netral}}</p>
+                      </div>
+    
+                      <div class="col-sm-3">
+                      <p>Akurasi : {{item.akurasi}}%</p>
+                      <p>Presisi : {{item.presisi}}%</p>
+                      <p>Recall : {{item.recall}}%</p>
+                      {% endfor %}
+                      </div>
+
+                  </div>            
+                </div>  
+              </div>
+
+              <!-- Bar Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Plotting Akurasi K = 1 -> K = 50</h6>
+                </div>
+                <div class="card-body">
+                  <div>
+                    <canvas id="myChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Wordcloud Kata Positif</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <a href="#positif">
+                    <img src="static/img/wc_positif.png" style="width: 300px; height: 300px" alt="">
+                  </a>
+                </div>
+                <div class="overlay" id="positif">
+                  <img src="static/img/wc_positif.png" alt="">
+                  <a href="#" class="close">x close</a>
+                </div>
+              </div>
+
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Wordcloud Kata Negatif</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <a href="#negatif">
+                    <img src="static/img/wc_negatif.png" alt="" style="width: 300px; height: 300px">
+                  </a>
+                </div>
+                <div class="overlay" id="negatif">
+                  <img src="static/img/wc_negatif.png" alt="">
+                  <a href="#" class="close">x close</a>
+                </div>
+              </div>
+            </div>  
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+
+    
+    <!-- Page level plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://d3js.org/d3.v6.min.js" charset="utf-8"></script>
+    <script>
+    
+
+
+    // Pie Chart Example
+    var ctx = document.getElementById("myPieChart");
+    var positif = '{{ positif }}';
+    var negatif = '{{ negatif }}';
+    var netral = '{{ netral }}';
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Positif', "Netral", "Negatif"],
+        datasets: [{
+          data: [positif,netral,negatif],
+          backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+          hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+
+
+     // Line Chart Example
+    var ctx = document.getElementById("myChart");
+    d3.csv("static/csv/cf.csv").then(makeChart);
+
+    // Plot the data with Chart.js
+    function makeChart(evaluasi) {
+        var k_Labels = evaluasi.map(function (d) {
+          return d.k;
+        });
+        var data_akurasi = evaluasi.map(function (d) {
+          return d.akurasi;
+        });
+
+
+    var myPieChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+            labels : k_Labels,
+            label: 'Nilai k',
+        datasets: [{
+          label: 'Pengujian Akurasi',
+          data: data_akurasi,
+          backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+          hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }]
+      }
+    });
+  }
+  
+
+
+    </script>
+
+
+{% endblock %}
