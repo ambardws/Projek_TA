@@ -10,6 +10,14 @@
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+ @font-face {
+	font-family: 'Nunito';
+	src: url('../fonts/Nunito-Black.ttf');
+	src: url('../fonts/Nunito-Black.ttf') format('ttf'),
+	     url('../fonts/Nunito-Black.ttf') format('truetype');
+}
+
 :root {
   --blue: #4e73df;
   --indigo: #6610f2;
@@ -46,6 +54,7 @@
 *::after {
   box-sizing: border-box;
 }
+
 
 html {
   font-family: sans-serif;
