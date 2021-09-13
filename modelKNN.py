@@ -1,6 +1,3 @@
-from pprint import pprint
-
-
 def modelKNN(val,k):
   import ast
   import pandas as pd 
@@ -77,19 +74,22 @@ def modelKNN(val,k):
   # recall score
   recall = round(recall_score(y_test, predicted,average='macro'),4)*100
 
-  cf = pd.DataFrame(columns=['k','akurasi'])
-  k_range = range(1,51)  #1-30
+  cf = pd.DataFrame(columns=['k','akurasi', 'presisi', 'recall'])
+  k_range = range(1,51)  #1-50
   for k in k_range:
     knn_iterated=KNeighborsClassifier(n_neighbors=k, metric='euclidean')
     clf_iterated = knn_iterated.fit(tf_idf_train,y_train)
     predicted_iterated = clf_iterated.predict(tf_idf_test)
 
-    # accuracy score
+    # cf
     akurasi_iterated = round(accuracy_score(y_test, predicted_iterated),4)*100
+    presisi_iterated = round(precision_score(y_test, predicted_iterated,average='macro'),4)*100
+    recall_iterated = round(recall_score(y_test, predicted_iterated,average='macro'),4)*100
 
-    cf.loc[k] = [k, akurasi_iterated]
+    cf.loc[k] = [k, akurasi_iterated, presisi_iterated, recall_iterated]
 
   cf.to_csv("static/csv/cf.csv")
+  cf.to_excel("static/csv/cf.xlsx")
 
   evaluasi = []
   objek_evaluasi = {"akurasi" : akurasi, "presisi" : presisi, "recall" : recall, "data_tes" : val, "nilai_k" : nilai_k}
@@ -97,5 +97,6 @@ def modelKNN(val,k):
   evaluasi.append(evaluasi_copy)
 
   hasil_klasifikasi.to_csv("static/csv/hasil_klasifikasi.csv")
+  hasil_klasifikasi.to_excel("static/csv/hasil_klasifikasi.xlsx")
 
   return evaluasi

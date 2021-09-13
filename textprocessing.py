@@ -1,9 +1,6 @@
 import pandas as pd
-from pprint import pp, pprint
 import string, re
-from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-import swifter
 
 
 def textprocessing():
@@ -75,6 +72,7 @@ def textprocessing():
     stopword = StopWordRemover(dictionary)
 
     df_preprocessed['Hasil_Stopword'] = df_preprocessed['Hasil_Case_Folding'].apply(lambda x: " ".join(stopword.remove(x) for x in x.split()))
+    df_preprocessed['Hasil_Stopword'] = df_preprocessed['Hasil_Stopword'].apply(remove_whitespace_LT)
     df_preprocessed['Hasil_Stopword'] = df_preprocessed['Hasil_Stopword'].apply(tokenizing)
 
 
@@ -100,6 +98,6 @@ def textprocessing():
     def get_stemmed_term(document):
         return [term_dict[term] for term in document]
 
-    df_preprocessed['Hasil_Stemming'] = df_preprocessed['Hasil_Stopword'].swifter.apply(get_stemmed_term)
+    df_preprocessed['Hasil_Stemming'] = df_preprocessed['Hasil_Stopword'].apply(get_stemmed_term)
 
     df_preprocessed.to_csv("static/csv/text_processing.csv")

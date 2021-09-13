@@ -5,15 +5,12 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-          </div>
-
-          <!-- Content Row -->
-          <div class="row">
+          </div> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
+            <!-- <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -27,10 +24,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
+            <!-- <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -44,10 +41,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
+            <!-- <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -65,10 +62,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Pending Requests Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
+            <!-- <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -83,18 +80,91 @@
                 </div>
               </div>
             </div>
+          </div> -->
+
+          <div class="card shadow mb-4 mt-2">
+            <div class="card-body text-dark">
+                <h1 class="text-center efek">Selamat Datang Di Website Analisis Portal Berita Menggunakan Metode K-Nearest Neigbor</h1>
+              </div> 
           </div>
 
+          <div class="card shadow mb-4 mt-2">
+            <div class="card-body text-dark">
+              <div class="row">
+                <div class="col-sm-6 text-justify">
+                  <b>Keterangan :</b>
+                  <br>
+                  <br>
+  
+                  Dari data yang dilakukan pengujian sebanyak {{jumlah_data|length}} data, jumlah sentimen kecenderungan pemberitaan tentang vaksinasi COVID-19 sebesar : <br><br>Positif {{positif}} berita <br>Negatif {{negatif}} berita <br>Netral {{netral}} berita
+                  <br>
+                  <br>
+                  Berdasarkan hal tersebut dengan melihat jumlah kecenderungan antara berita positif ,negatif maupun netral maka pemberitaan COVID-19 di Indonesia memiliki tendensi atau kecenderungan <b>{{kesimpulan}}</b>
+                </div>
+  
+                <div class="col-sm-6">
+                  <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                </div>
+              </div>    
+          </div>
+        </div>
+
+        </div>
+
+      
+              
           
 
 {% endblock %}
 
 {% block js %}
     {{ super() }}
+     <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script>
+
+    <script>
+    // Pie Chart Example
+    var ctx = document.getElementById("myPieChart");
+    var positif = '{{ positif }}';
+    var negatif = '{{ negatif }}';
+    var netral = '{{ netral }}';
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Positif', "Netral", "Negatif"],
+        datasets: [{
+          data: [positif,netral,negatif],
+          backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+          hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+    </script>
+
+
     <!-- Page level plugins -->
-    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script>
+    <!-- <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script> -->
 
     <!-- Page level custom scripts -->
-    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js')}}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js')}}"></script> -->
 {% endblock %}
